@@ -21,19 +21,21 @@ public class SpawnLayout : MonoBehaviour
             //ROW LOGIC
             if (row % 2 == 0)
             {
+                
                 //ROW to the LEFT
-                for(int rowElement = 1; rowElement <= 9; rowElement++)
+                for (int rowElement = 2; rowElement <= 10; rowElement++)
                 {
-                    if(bubblePrefab != null)
+                    if (bubblePrefab != null)
                     {
                         Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
-                    }else { Debug.LogError("Bubble prefab missing"); }
+                    }
+                    else { Debug.LogError("Bubble prefab missing"); }
                 }
             }
             else
             {
                 //ROW to the RIGHT
-                for (int rowElement = 2; rowElement <= 10; rowElement++)
+                for (int rowElement = 1; rowElement <= 9; rowElement++)
                 {
                     if (bubblePrefab != null)
                     {
