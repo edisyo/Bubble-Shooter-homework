@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bubble
+  - BubbleShot
   layers:
   - Default
   - TransparentFX

@@ -9,11 +9,13 @@ public class SpawnLayout : MonoBehaviour
 
 
     public GameObject bubblePrefab;
+    float offset;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        offset = bubblePrefab.transform.localScale.x / 2;
 
         //GRID
         for (int row = -1; row >= -5; row--)
@@ -22,23 +24,24 @@ public class SpawnLayout : MonoBehaviour
             if (row % 2 == 0)
             {
                 
-                //ROW to the LEFT
+                //ROW to the RIGHT
                 for (int rowElement = 2; rowElement <= 10; rowElement++)
                 {
                     if (bubblePrefab != null)
                     {
-                        Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
+                        Instantiate(bubblePrefab, new Vector3(rowElement - offset, row, 0), Quaternion.identity);
                     }
                     else { Debug.LogError("Bubble prefab missing"); }
                 }
             }
             else
             {
-                //ROW to the RIGHT
+                //ROW to the LEFT
                 for (int rowElement = 1; rowElement <= 9; rowElement++)
                 {
                     if (bubblePrefab != null)
                     {
+
                         Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
                     }
                     else { Debug.LogError("Bubble prefab missing"); }

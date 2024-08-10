@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class BubbleShooter : MonoBehaviour
 {
@@ -11,8 +12,11 @@ public class BubbleShooter : MonoBehaviour
     GameObject Arrow;
 
     //for bubble shooting
-    bool readyToShoot;
     public float shootStrength;
+    public PhysicsMaterial2D BounceMaterial;
+    bool readyToShoot;
+    private CircleCollider2D col;
+    
 
     //debugging
     public TextMeshProUGUI debug1;
@@ -28,13 +32,15 @@ public class BubbleShooter : MonoBehaviour
     void Start()
     {
         turnOffArrow();
+        
         readyToShoot = false;
+        SpawnShootingBubble();
     }
 
     // Update is called once per frame
     void Update()
     {
-        SpawnBubble();
+        
         turnOnArrow();
 
         debug1.text = "ReadyToShoot: " + readyToShoot;
@@ -48,7 +54,7 @@ public class BubbleShooter : MonoBehaviour
 
     }
 
-    void SpawnBubble() 
+    public void SpawnShootingBubble() 
     {
         //IF empty then spawn Bubble
         if (shootingPosition.childCount == 0)
@@ -57,7 +63,17 @@ public class BubbleShooter : MonoBehaviour
             GameObject go = Instantiate(bubblePrefab, shootingPosition.transform);
             go.transform.localPosition = Vector3.zero;
             BubbleToShoot = go.gameObject;
+            BubbleToShoot.tag = "BubbleShot";
+            BubbleToShoot.name = "BubbleToShoot";
             readyToShoot = true;
+
+            Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.sharedMaterial = BounceMaterial; //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
+
+            col = BubbleToShoot.GetComponent<CircleCollider2D>();
+            col.radius = 0.55f;
+            
         }
 
     }
@@ -68,15 +84,22 @@ public class BubbleShooter : MonoBehaviour
         {
             readyToShoot = false;
             print("shooting");
+            //Calculate which direction to shoot
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
             Vector2 dir = mousePos - transform.position;
-            BubbleToShoot.GetComponent<Rigidbody2D>().velocity = dir * shootStrength;
-            //SpawnBubble();
+            
+            //Shoot the bubble
+            Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
+            rb.velocity = dir * shootStrength;
+
+            //unparent bubble
+            BubbleToShoot.transform.SetParent(null);
         }
 
         
     }
+
+
     void turnOnArrow()
     {
         Arrow.SetActive(true);
@@ -85,5 +108,10 @@ public class BubbleShooter : MonoBehaviour
     void turnOffArrow()
     {
         Arrow.SetActive(false);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
     }
 }

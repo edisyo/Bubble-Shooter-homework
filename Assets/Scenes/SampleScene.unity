@@ -997,7 +997,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 6180463856627007509, guid: 3eb88875906470a488cd1677fb496148, type: 3}
   BubbleToShoot: {fileID: 0}
-  shootStrength: 2
+  shootStrength: 3
+  BounceMaterial: {fileID: 6200000, guid: 77428cdd975c92d4e91778d8796da7e8, type: 2}
+  debug1: {fileID: 358132005}
 --- !u!1 &1058183296
 GameObject:
   m_ObjectHideFlags: 0
