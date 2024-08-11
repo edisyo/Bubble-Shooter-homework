@@ -40,14 +40,10 @@ public class BubbleShooter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        turnOnArrow();
-
         debug1.text = "ReadyToShoot: " + readyToShoot;
 
         if (Input.GetMouseButtonDown(0))
         {
-            print("mouse L pressed");
             shootBubble();
         }
 
@@ -59,7 +55,6 @@ public class BubbleShooter : MonoBehaviour
         //IF empty then spawn Bubble
         if (shootingPosition.childCount == 0)
         {
-            print("spawning");
             GameObject go = Instantiate(bubblePrefab, shootingPosition.transform);
             Bubble bubble = go.GetComponent<Bubble>();
             bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
@@ -67,8 +62,10 @@ public class BubbleShooter : MonoBehaviour
             go.transform.localPosition = Vector3.zero;
             BubbleToShoot = go.gameObject;
             BubbleToShoot.tag = "BubbleShot";
-            BubbleToShoot.name = "BubbleToShoot";
+            BubbleToShoot.name = "BubbleToShoot"+FindAnyObjectByType<SpawnLayout>().BubbleNr;
+            FindAnyObjectByType<SpawnLayout>().BubbleNr++;
             readyToShoot = true;
+            turnOnArrow();
 
             Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Dynamic;
@@ -85,8 +82,8 @@ public class BubbleShooter : MonoBehaviour
     {
         if (readyToShoot)
         {
+            turnOffArrow();
             readyToShoot = false;
-            print("shooting");
             //Calculate which direction to shoot
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 dir = mousePos - transform.position;

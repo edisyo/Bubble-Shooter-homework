@@ -10,6 +10,7 @@ public class SpawnLayout : MonoBehaviour
 
     public GameObject bubblePrefab;
     float offset;
+    public int BubbleNr = 0;
 
 
     // Start is called before the first frame update
@@ -31,8 +32,9 @@ public class SpawnLayout : MonoBehaviour
                     {
                         GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement - offset, row, 0), Quaternion.identity);
                         Bubble bubble = go.GetComponent<Bubble>();
-                        bubble.SetBubbleColor(BubbleColor.Yellow);
-                        bubble.GetBubbleColor();
+                        bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
+                        bubble.name = "Bubble"+BubbleNr;
+                        BubbleNr++;
                     }
                     else { Debug.LogError("Bubble prefab missing"); }
                 }
@@ -46,8 +48,9 @@ public class SpawnLayout : MonoBehaviour
                     {
                         GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
                         Bubble bubble = go.GetComponent<Bubble>();
-                        bubble.SetBubbleColor(BubbleColor.Blue);
-                        bubble.GetBubbleColor();
+                        bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
+                        bubble.name = "Bubble" + BubbleNr;
+                        BubbleNr++;
 
                     }
                     else { Debug.LogError("Bubble prefab missing"); }
