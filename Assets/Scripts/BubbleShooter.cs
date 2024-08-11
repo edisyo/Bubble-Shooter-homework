@@ -19,7 +19,7 @@ public class BubbleShooter : MonoBehaviour
     
 
     //debugging
-    public TextMeshProUGUI debug1;
+    //public TextMeshProUGUI debug1;
 
 
     private void Awake()
@@ -40,7 +40,7 @@ public class BubbleShooter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        debug1.text = "ReadyToShoot: " + readyToShoot;
+        //debug1.text = "ReadyToShoot: " + readyToShoot;
 
         if (Input.GetMouseButtonDown(0))
         {

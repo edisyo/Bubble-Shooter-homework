@@ -559,7 +559,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &358132004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -695,7 +695,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &363051147
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -863,7 +863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &499136297
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1167,7 +1167,6 @@ MonoBehaviour:
   BubbleToShoot: {fileID: 0}
   shootStrength: 3
   BounceMaterial: {fileID: 6200000, guid: 77428cdd975c92d4e91778d8796da7e8, type: 2}
-  debug1: {fileID: 358132005}
 --- !u!1 &1058183296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,7 +1214,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1253614080
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1299,7 +1298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1343499319
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1578,7 +1577,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1710867640
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1662,7 +1661,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1771160933
 SpriteRenderer:
   m_ObjectHideFlags: 0

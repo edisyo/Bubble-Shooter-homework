@@ -84,7 +84,7 @@ public class Bubble : MonoBehaviour
             shotBubble.transform.position = correctBouncePosition;
 
             
-            //should it be here - YES! Otherwise, the CheckForMatching will be called twice. Becouse the new ShotBall will colide with this and trigger this event again!
+            //should it be here? - YES! Otherwise, the CheckForMatching will be called twice. Becouse the new ShotBall will colide with this and trigger this event again!
             shotBubble.transform.tag = "Bubble";
 
 
