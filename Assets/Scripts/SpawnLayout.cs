@@ -29,7 +29,12 @@ public class SpawnLayout : MonoBehaviour
                 {
                     if (bubblePrefab != null)
                     {
-                        Instantiate(bubblePrefab, new Vector3(rowElement - offset, row, 0), Quaternion.identity);
+                        GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement - offset, row, 0), Quaternion.identity);
+                        go.SetActive(false);
+                        Bubble bubble = go.GetComponent<Bubble>();
+                        bubble.SetBubbleColor(BubbleColor.Yellow);
+                        bubble.GetBubbleColor();
+                        go.SetActive(true);
                     }
                     else { Debug.LogError("Bubble prefab missing"); }
                 }
@@ -41,8 +46,10 @@ public class SpawnLayout : MonoBehaviour
                 {
                     if (bubblePrefab != null)
                     {
+                        GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
+                        Bubble bubble = go.GetComponent<Bubble>();
+                        bubble.SetBubbleColor(BubbleColor.Blue);
 
-                        Instantiate(bubblePrefab, new Vector3(rowElement, row, 0), Quaternion.identity);
                     }
                     else { Debug.LogError("Bubble prefab missing"); }
                 }

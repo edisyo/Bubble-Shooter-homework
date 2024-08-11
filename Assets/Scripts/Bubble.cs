@@ -2,10 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Bubble;
+
+public enum BubbleColor { Yellow, Blue, Pink, Cyan, Green, Red };
 
 public class Bubble : MonoBehaviour
 {
-    
+    //private Color color;
+    private BubbleColor bubbleColor;
+
+    public void SetBubbleColor(BubbleColor _bubbleColor)
+    {
+        SpriteRenderer spriteColor = GetComponent<SpriteRenderer>();
+        bubbleColor = _bubbleColor;
+        switch (_bubbleColor)
+        {
+            case BubbleColor.Yellow:
+                spriteColor.color = new Color(248, 230, 0);
+                break;
+            case BubbleColor.Blue:
+                spriteColor.color = new Color(0, 101, 248);
+                break;
+            /*case BubbleColor.Pink:
+                thisSprite.color = new Color(248, 230, 0);
+                break;
+            case BubbleColor.Cyan:
+                thisSprite.color = new Color(248, 230, 0);
+                break;
+            case BubbleColor.Green:
+                thisSprite.color = new Color(248, 230, 0);
+                break;
+            case BubbleColor.Red:
+                thisSprite.color = new Color(248, 230, 0);
+                break;*/
+            default:
+                break;
+        }
+    }
+
+    public BubbleColor GetBubbleColor() 
+    {
+        print("changing Bubble Color to: " + bubbleColor);
+        return bubbleColor; 
+    }
+
 
     //Called when script instance is being loaded
     private void Awake()
@@ -54,13 +94,13 @@ public class Bubble : MonoBehaviour
                 if (hitPosX >= midValue)            //Offset side - L or R
                 {
                     
-                    hitPos.x = midValue + 0.5f;     //Bubble needs to go to the LEFT OFFSET
-                    print("Offset to LEFT");
+                    hitPos.x = midValue + 0.5f;     //Bubble needs to go to the RIGHT OFFSET
+                    print("Offset to RIGHT");
                 }
                 else
                 {
-                    hitPos.x = midValue - 0.5f;     //Bubble needs to go to the RIGHT OFFSET
-                    print("Offset to RIGHT");
+                    hitPos.x = midValue - 0.5f;     //Bubble needs to go to the LEFT OFFSET
+                    print("Offset to LEFT");
                 }
                 
                 //hitPos.y = Mathf.Round(hitPos.y);   //Round Row position
@@ -78,8 +118,8 @@ public class Bubble : MonoBehaviour
             go.transform.tag = "Bubble";
             go.transform.name = "ShotBubble";
             FindAnyObjectByType<BubbleShooter>().SpawnShootingBubble();
-
+            
             //CalculatePoints();
         }
-    }
+    } 
 }

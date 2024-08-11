@@ -61,6 +61,7 @@ public class BubbleShooter : MonoBehaviour
         {
             print("spawning");
             GameObject go = Instantiate(bubblePrefab, shootingPosition.transform);
+            //TODO: Randomize Bubble Color()
             go.transform.localPosition = Vector3.zero;
             BubbleToShoot = go.gameObject;
             BubbleToShoot.tag = "BubbleShot";
@@ -72,7 +73,7 @@ public class BubbleShooter : MonoBehaviour
             rb.sharedMaterial = BounceMaterial; //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
 
             col = BubbleToShoot.GetComponent<CircleCollider2D>();
-            col.radius = 0.55f;
+            col.radius = 0.5f;
             
         }
 
