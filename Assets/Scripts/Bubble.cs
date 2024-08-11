@@ -4,47 +4,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static Bubble;
 
-public enum BubbleColor { Yellow, Blue, Pink, Cyan, Green, Red };
+
+public enum BubbleColor { Yellow, Blue, Pink, Cyan, Green, Red };       //Needs to be outside of class, otherwise can access it only through Bubble.BubbleColor.x not BubbleColor.x
 
 public class Bubble : MonoBehaviour
 {
     //private Color color;
-    private BubbleColor bubbleColor;
+    [SerializeField] private BubbleColor bubbleColor;
+    Color c_yellow = new Color(0.97f, 0.9f, 0, 1f);
+    Color c_blue = new Color(0, 0.39f, 0.97f, 1f);
+    Color c_pink = new Color(0.97f, 0, 0.57f, 1f);
+    Color c_cyan = new Color(0, 0.97f, 0.95f, 1f);
+    Color c_green = new Color(0, 0.9f, 0, 1f);
+    Color c_red = new Color(0.9f, 0.15f, 0, 1f);
 
-    public void SetBubbleColor(BubbleColor _bubbleColor)
-    {
-        SpriteRenderer spriteColor = GetComponent<SpriteRenderer>();
-        bubbleColor = _bubbleColor;
-        switch (_bubbleColor)
-        {
-            case BubbleColor.Yellow:
-                spriteColor.color = new Color(248, 230, 0);
-                break;
-            case BubbleColor.Blue:
-                spriteColor.color = new Color(0, 101, 248);
-                break;
-            /*case BubbleColor.Pink:
-                thisSprite.color = new Color(248, 230, 0);
-                break;
-            case BubbleColor.Cyan:
-                thisSprite.color = new Color(248, 230, 0);
-                break;
-            case BubbleColor.Green:
-                thisSprite.color = new Color(248, 230, 0);
-                break;
-            case BubbleColor.Red:
-                thisSprite.color = new Color(248, 230, 0);
-                break;*/
-            default:
-                break;
-        }
-    }
 
-    public BubbleColor GetBubbleColor() 
-    {
-        print("changing Bubble Color to: " + bubbleColor);
-        return bubbleColor; 
-    }
+
 
 
     //Called when script instance is being loaded
@@ -72,47 +47,45 @@ public class Bubble : MonoBehaviour
         {
             //Getting hit info
             Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-            rb.velocity = Vector2.zero; //stopping velocity
-            rb.angularVelocity = 0f; //stopping rotation
-            rb.sharedMaterial = null; //Removing bouncy physics material
+            rb.velocity = Vector2.zero;                 //stopping velocity
+            rb.angularVelocity = 0f;                    //stopping rotation
+            rb.sharedMaterial = null;                   //Removing bouncy physics material
             rb.bodyType = RigidbodyType2D.Static;
             Vector3 hitPos = rb.transform.localPosition;
             GameObject go = rb.gameObject;
-            print("HIT: " + hitPos);
+            //print("HIT: " + hitPos);
 
             //Putting Shot Bubble into the right place after collision
             
-            hitPos.y = Mathf.Round(hitPos.y);
+            hitPos.y = Mathf.Round(hitPos.y);           //Round ROW position
 
-            if (hitPos.y % 2 == 0)                  //IF EVEN row, apply offset
+            if (hitPos.y % 2 == 0)                      //IF EVEN row, apply offset
             {
-                print("EVEN ROW");
-                float hitPosX = hitPos.x;           //save original x value   
+                //print("EVEN ROW");
+                float hitPosX = hitPos.x;               //save original x value   
                 float midValue = Mathf.Round(hitPos.x) + 0.05f;     //to which side of this value is hitPosX
 
-                print(hitPosX + " >= "+ midValue);
-                if (hitPosX >= midValue)            //Offset side - L or R
+                //print(hitPosX + " >= "+ midValue);
+                if (hitPosX >= midValue)                //Offset side - L or R
                 {
                     
-                    hitPos.x = midValue + 0.5f;     //Bubble needs to go to the RIGHT OFFSET
-                    print("Offset to RIGHT");
+                    hitPos.x = midValue + 0.5f;         //Bubble needs to go to the RIGHT OFFSET
+                    //print("Offset to RIGHT");
                 }
                 else
                 {
-                    hitPos.x = midValue - 0.5f;     //Bubble needs to go to the LEFT OFFSET
-                    print("Offset to LEFT");
+                    hitPos.x = midValue - 0.5f;         //Bubble needs to go to the LEFT OFFSET
+                    //print("Offset to LEFT");
                 }
                 
-                //hitPos.y = Mathf.Round(hitPos.y);   //Round Row position
-                go.transform.position = hitPos;     //Apply bounce position
+                go.transform.position = hitPos;         //Apply bounce position
                 
             }
             else
             {
-                print("ODD ROW");
-                hitPos.x = Mathf.Round(hitPos.x);
-                //hitPos.y = Mathf.Round(hitPos.y);
-                go.transform.position = hitPos;     //Apply bounce position
+                //print("ODD ROW");
+                hitPos.x = Mathf.Round(hitPos.x);       //Round rowElement position
+                go.transform.position = hitPos;         //Apply bounce position
             }
 
             go.transform.tag = "Bubble";
@@ -121,5 +94,57 @@ public class Bubble : MonoBehaviour
             
             //CalculatePoints();
         }
-    } 
+    }
+
+    public BubbleColor GetBubbleColor()                                 //GET Bubbles Color
+    {
+        print("Bubble Color is: " + bubbleColor);
+        return bubbleColor;
+    }
+
+    public void SetBubbleColor(BubbleColor _bubbleColor)                //SET Bubbles Color
+
+    {                                                                   //with a little bit of help from https://stackoverflow.com/questions/22335103/c-sharp-how-to-use-get-set-and-use-enums-in-a-class and https://www.youtube.com/watch?v=HzIqrlSbjjU&list=PLX2vGYjWbI0S8YpPPKKvXZayCjkKj4bUP&index=3
+        //SpriteRenderer spriteColor = GetComponent<SpriteRenderer>();
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.sharedMaterial.color = Color.white;                      //for safety to not get weird tints
+        bubbleColor = _bubbleColor;                                     //For getting the color
+        print("Changing Bubble Color to: " + _bubbleColor);
+        switch (_bubbleColor)
+        {
+            case BubbleColor.Yellow:
+                sprite.color = c_yellow;
+                print("Changing to YELLOW");
+                print("Color: " + Color.yellow);
+                break;
+            case BubbleColor.Blue:
+                sprite.color = c_blue;
+                print("Changing to BLUE");
+                print("Color: " + GetComponent<SpriteRenderer>().color);
+                break;
+            case BubbleColor.Pink:
+                sprite.color = c_pink;
+                print("Changing to PINK");
+                print("Color: " + GetComponent<SpriteRenderer>().color);
+                break;
+            case BubbleColor.Cyan:
+                sprite.color = c_cyan;
+                print("Changing to CYAN");
+                print("Color: " + GetComponent<SpriteRenderer>().color);
+                break;
+            case BubbleColor.Green:
+                sprite.color = c_green;
+                print("Changing to GREEN");
+                print("Color: " + GetComponent<SpriteRenderer>().color);
+                break;
+            case BubbleColor.Red:
+                sprite.color = c_red;
+                print("Changing to RED");
+                print("Color: " + GetComponent<SpriteRenderer>().color);
+                break;
+            default:
+                break;
+        }
+    }
+
 }

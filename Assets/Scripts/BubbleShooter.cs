@@ -61,7 +61,9 @@ public class BubbleShooter : MonoBehaviour
         {
             print("spawning");
             GameObject go = Instantiate(bubblePrefab, shootingPosition.transform);
-            //TODO: Randomize Bubble Color()
+            Bubble bubble = go.GetComponent<Bubble>();
+            bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
+
             go.transform.localPosition = Vector3.zero;
             BubbleToShoot = go.gameObject;
             BubbleToShoot.tag = "BubbleShot";
@@ -70,7 +72,7 @@ public class BubbleShooter : MonoBehaviour
 
             Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Dynamic;
-            rb.sharedMaterial = BounceMaterial; //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
+            rb.sharedMaterial = BounceMaterial;                                         //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
 
             col = BubbleToShoot.GetComponent<CircleCollider2D>();
             col.radius = 0.5f;
