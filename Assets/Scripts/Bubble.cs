@@ -39,7 +39,7 @@ public class Bubble : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        isLeftHanging();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -147,6 +147,8 @@ public class Bubble : MonoBehaviour
         }
     }
 
+
+    //Recursive fucntion to find all Matching Bubbles
     private void FindMatchingBubbles(Bubble bubble, BubbleColor bubbleColor, List<Bubble> matchingBubbles)
     {
         //if the bubble has already been visited, then return
@@ -171,28 +173,49 @@ public class Bubble : MonoBehaviour
                 FindMatchingBubbles(overlappingBubble, bubbleColor, matchingBubbles);
             }
         }
-
     }
 
+
+    //Check if bubble is "left hanging"
+    private void isLeftHanging()
+    {
+        //If no overlapping Bubbles, only itself, then POP
+        if (transform.CompareTag("Bubble"))             //to not affect Shooting Bubble
+        {
+            Collider2D[] OverlappingBubbles = Physics2D.OverlapCircleAll(transform.position, 0.8f);
+
+            //Overlapping only self
+            if (OverlappingBubbles.Length == 1)
+            { 
+                PopBubble(this);
+                print("Hey, I was left hanging! " + transform.name);
+            } 
+        }
+    }
+
+    //Bubble has been matched, "pop it"
     private void PopBubble(Bubble bubble)
     {
         bubble.gameObject.SetActive(false);
+        //Add Score
+        Destroy(bubble.gameObject);
     }
 
-    //Get Bubbles BubbleColor
+    //GET Bubble's BubbleColor
     public BubbleColor GetBubbleColor()                                 
     {
         return bubbleColor;
     }
 
-    public void SetBubbleColor (BubbleColor _bubbleColor)                //SET Bubbles Color
-
+    //SET Bubble's  BubbleColor
+    public void SetBubbleColor (BubbleColor _bubbleColor)                
     {                                                                   //with a little bit of help from https://stackoverflow.com/questions/22335103/c-sharp-how-to-use-get-set-and-use-enums-in-a-class and https://www.youtube.com/watch?v=HzIqrlSbjjU&list=PLX2vGYjWbI0S8YpPPKKvXZayCjkKj4bUP&index=3
-        //SpriteRenderer spriteColor = GetComponent<SpriteRenderer>();
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         sprite.sharedMaterial.color = Color.white;                      //for safety to not get weird tints
-        bubbleColor = _bubbleColor;                                     //For getting the color
-        //print("Changing Bubble Color to: " + _bubbleColor);
+
+        //Set the global parameter
+        bubbleColor = _bubbleColor;                                     
+
         switch (_bubbleColor)
         {
             case BubbleColor.Yellow:
@@ -212,8 +235,6 @@ public class Bubble : MonoBehaviour
                 break;
             case BubbleColor.Red:
                 sprite.color = c_red;
-                //print("Changing to RED");
-                //print("Color: " + GetComponent<SpriteRenderer>().color);
                 break;
             default:
                 break;
