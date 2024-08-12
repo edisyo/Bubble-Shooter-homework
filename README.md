@@ -5,12 +5,12 @@ This project was developed as technical assigment for MunchMunchDev.
 The goal of the project was to create a simple hyper-casual mobile 
 game prototype with a Bubble Shooter mechanic in around 4 hour time.
 Included subtasks were:
-	- Gameplay mechanics from the reference game
-	- An input method for devices without a cursor (e.g. mobile devices)
-	- Level editor (meaning, levels wouldn’t be random anymore)
-	- A level selection menu
-	- Juice (game feel)
-	- Come up with your own subtask
+- Gameplay mechanics from the reference game
+- An input method for devices without a cursor (e.g. mobile devices)
+- Level editor (meaning, levels wouldn’t be random anymore)
+- A level selection menu
+- Juice (game feel)
+- Come up with your own subtask
 
 
 ## The project's main gameplay mechanics are:
