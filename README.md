@@ -12,7 +12,6 @@ Included subtasks were:
 	- Juice (game feel)
 	- Come up with your own subtask
 
-******************************************************************************-
 
 ## The project's main gameplay mechanics are:
 - Bubble layout
@@ -31,23 +30,22 @@ Project uses URP Render Pipeline
 For now there is only 1 level made and there is only 1 input - mouse button.
 
 **Input:**
-	- Aim - Using mouse/ cursos
-	- Shoot Bubble 	- Left Mouse Button
+- Aim - Using mouse/ cursos
+- Shoot Bubble - Left Mouse Button
 
 **Instructions:**
-	- Open the project in the specified Unity Version
-	- Press Play
-	- Use your mouse to aim
-	- Use Left Mouse Button to Shoot Bubbles
+- Open the project in the specified Unity Version
+- Press Play
+- Use your mouse to aim
+- Use Left Mouse Button to Shoot Bubbles
 
 
 ## Challenges
-- Bubble colors
-	_**TLDR:**_ HEX code didnt work. Tried RGB(0-255), that didnt work. Tried the
-		  built-in Color.Blue and suddenly worked. Changed all my colors to
-		  RGB(0-1) and works as intended.
-  
-	The first big challenge, that i spent way too much time on is about
+1. Bubble colors
+	- _**TLDR:**_ HEX code didnt work. Tried RGB(0-255), that didnt work. Tried the
+	built-in Color.Blue and suddenly worked. Changed all my colors to
+	RGB(0-1) and works as intended.
+  	- The first big challenge, that i spent way too much time on is about
 	Balloon colors. At first I wanted to use HEX values for color, Unity
 	didn't really seem to support that, which is VERY, VERY weird to me.
 	Then I tried to do it with RGB(0-255) values - using Unity's class
@@ -59,8 +57,8 @@ For now there is only 1 level made and there is only 1 input - mouse button.
 	new color and it printed out in RGB(0-1). Then I changed all my colors
 	to RGB(0-1) and suddenly they worked.
 
-- Bubble matching
-	I couldn't find a way how to get the bubbles, that are around the 
+2. Bubble matching
+	- I couldn't find a way how to get the bubbles, that are around the 
 	just shot bubble. I was thinking about using Raycasts, but thought it
 	will be harder and ineffective. I was reading about CircleCollider2D 
 	and it's methods, then I saw OverlapCollider which led me to find a
@@ -75,21 +73,21 @@ For now there is only 1 level made and there is only 1 input - mouse button.
 
 
 ## Future Improvements
-- Need to improve "Floating bubble" logic, does not work correctly
-- Create a full game loop
-- While writing this Readme file and looking at the code, I dont understand
+- [ ] Need to improve "Floating bubble" logic, does not work correctly
+- [ ] Create a full game loop
+- [ ] While writing this Readme file and looking at the code, I dont understand
   how I didnt thought about this sooner. When creating layout, I can put each
   Bubble into an 2D array
-- Add better background image
-- Add UI elements, like score
-- Add Particle Systems and Audio/Sounds
-- Add Main menu and Level selection screen
-- Level editor would be perfect - available colors, layout size and pattern
-- Add obstacles
+- [ ] Add better background image
+- [ ] Add UI elements, like score
+- [ ] Add Particle Systems and Audio/Sounds
+- [ ] Add Main menu and Level selection screen
+- [ ] Level editor would be perfect - available colors, layout size and pattern
+- [ ] Add obstacles
+
 
 
 Hope I mentioned everything.
 Looking forward to perfecting this project and my skills.
-
 
 Eduards, 12.08.2024
