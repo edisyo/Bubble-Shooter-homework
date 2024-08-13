@@ -75,6 +75,7 @@ For now, there is only 1 level made and there is only 1 input - mouse button.
 ## Future Improvements
 - [ ] Need to improve "Floating bubble" logic, does not work correctly
 - [ ] Create a full game loop
+- [ ] Add game States
 - [ ] While writing this Readme file and looking at the code, I don't understand
   how I didn't think about this sooner. When creating the layout, I can put each
   Bubble into a 2D array
