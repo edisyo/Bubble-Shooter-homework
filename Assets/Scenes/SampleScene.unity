@@ -1303,7 +1303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 6180463856627007509, guid: 3eb88875906470a488cd1677fb496148, type: 3}
   BubbleToShoot: {fileID: 6180463856627007509, guid: 3eb88875906470a488cd1677fb496148, type: 3}
-  shootStrength: 3
+  shootStrength: 12
   BounceMaterial: {fileID: 6200000, guid: 77428cdd975c92d4e91778d8796da7e8, type: 2}
   bottomCollider: {fileID: 0}
   shootingPosition: {fileID: 0}

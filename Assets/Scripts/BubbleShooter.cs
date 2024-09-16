@@ -7,12 +7,12 @@ using Unity.VisualScripting;
 public class BubbleShooter : MonoBehaviour
 {
     public GameObject bubblePrefab;
-    public GameObject BubbleToShoot;
+    public GameObject bubbleToShoot;
     Arrow Arrow;
     private Layout Layout;
 
     //for bubble shooting
-    public float shootStrength;
+    public FloatVariable shootStrength;
     public PhysicsMaterial2D BounceMaterial;
     bool readyToShoot;
     private CircleCollider2D col;
@@ -25,8 +25,38 @@ public class BubbleShooter : MonoBehaviour
     //public TextMeshProUGUI debug1;
 
     //Bubble collision variables
-        private HashSet<Bubble> visitedBubbles = new HashSet<Bubble>();
+    private HashSet<Bubble> visitedBubbles = new HashSet<Bubble>();
 
+
+    private void Awake()
+    {
+        Arrow = FindObjectOfType<Arrow>();
+        Layout = FindObjectOfType<Layout>();
+        shootingPosition = transform.Find("BubblesPlaceholder");
+        bottomCollider = Camera.main.transform.Find("Wall_D2");
+
+        bottomCollider.gameObject.SetActive(false);
+        col = bubbleToShoot.GetComponent<CircleCollider2D>();
+    }
+
+    void Start()
+    {
+        turnOffArrow();
+        
+        readyToShoot = false;
+        SpawnShootingBubble();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        //debug1.text = "ReadyToShoot: " + readyToShoot;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            shootBubble();
+        }
+    }
 
     void OnEnable()
     {
@@ -97,42 +127,6 @@ public class BubbleShooter : MonoBehaviour
             checkForMatchingBubbles(shotBubble.GetComponent<Bubble>());
 
             FindAnyObjectByType<BubbleShooter>().SpawnShootingBubble();
-        
-        
-    }
-
-    private void Awake()
-    {
-        Arrow = FindObjectOfType<Arrow>();
-        Layout = FindObjectOfType<Layout>();
-        shootingPosition = transform.Find("BubblesPlaceholder");
-        bottomCollider = Camera.main.transform.Find("Wall_D2");
-
-        bottomCollider.gameObject.SetActive(false);
-        col = BubbleToShoot.GetComponent<CircleCollider2D>();
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        turnOffArrow();
-        
-        readyToShoot = false;
-        SpawnShootingBubble();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //debug1.text = "ReadyToShoot: " + readyToShoot;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            shootBubble();
-        }
-
-
     }
 
     public void SpawnShootingBubble() 
@@ -141,20 +135,19 @@ public class BubbleShooter : MonoBehaviour
         if (shootingPosition.childCount == 0)
         {
             bottomCollider.gameObject.SetActive(false);
-            GameObject go = Instantiate(bubblePrefab, shootingPosition.transform);
-            Bubble bubble = go.GetComponent<Bubble>();
+            bubbleToShoot = Instantiate(bubblePrefab, shootingPosition.transform);
+            Bubble bubble = bubbleToShoot.GetComponent<Bubble>();
             bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                    //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
             Layout.BubbleNr++;
             //Layout.layout.Add(Layout.BubbleNr, bubble);
 
-            go.transform.localPosition = Vector3.zero;
-            BubbleToShoot = go.gameObject;
-            BubbleToShoot.tag = "BubbleShot";
-            BubbleToShoot.name = "BubbleToShoot" + Layout.BubbleNr;
+            bubbleToShoot.transform.localPosition = Vector3.zero;
+            bubbleToShoot.tag = "BubbleShot";
+            bubbleToShoot.name = "BubbleToShoot" + Layout.BubbleNr;
             readyToShoot = true;
             turnOnArrow();
 
-            Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
+            Rigidbody2D rb = bubbleToShoot.GetComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.sharedMaterial = BounceMaterial;                                         //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
 
@@ -162,29 +155,25 @@ public class BubbleShooter : MonoBehaviour
         }
 
     }
-
     void shootBubble()
     {
         if (readyToShoot)
         {
             turnOffArrow();
             readyToShoot = false;
-            // //Calculate which direction to shoot
+
             // Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             // Vector2 dir = mousePos - transform.position;
             
             //Shoot the bubble
-            Rigidbody2D rb = BubbleToShoot.GetComponent<Rigidbody2D>();
-            rb.velocity = Arrow.GetDirection() * shootStrength;
+            Rigidbody2D rb = bubbleToShoot.GetComponent<Rigidbody2D>();
+            rb.velocity = Arrow.GetDirection() * shootStrength.value;
 
             //unparent bubble
-            BubbleToShoot.transform.SetParent(null);
+            bubbleToShoot.transform.SetParent(null);
             bottomCollider.gameObject.SetActive(true);
         }
-
-        
     }
-
 
     void turnOnArrow()
     {
@@ -195,6 +184,7 @@ public class BubbleShooter : MonoBehaviour
     {
         Arrow.gameObject.SetActive(false);
     }
+
 
        //Bubble matching logic
     private void checkForMatchingBubbles(Bubble _shotBubble)             
@@ -212,6 +202,7 @@ public class BubbleShooter : MonoBehaviour
             }
         }
     }
+
 
     //Recursive fucntion to find all Matching Bubbles
     private void FindMatchingBubbles(Bubble bubble, BubbleColor bubbleColor, List<Bubble> matchingBubbles)
