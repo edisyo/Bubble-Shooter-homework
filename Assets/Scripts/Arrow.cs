@@ -26,6 +26,12 @@ public class Arrow : MonoBehaviour
         mousePos.z = 0;
         Look = transform.InverseTransformPoint(mousePos); //Code from BudGames from youtube https://www.youtube.com/watch?v=1Oda2M4BoNs
         angle = Mathf.Atan2(Look.y, Look.x) * Mathf.Rad2Deg - 90;
+        
         transform.Rotate(0, 0, angle);
+    }
+
+    public Vector3 GetDirection()
+    {
+        return transform.up;
     }
 }
