@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 
 public class BubbleShooter : MonoBehaviour
 {
     public GameObject bubblePrefab;
-    public GameObject bubbleToShoot;
+    private BubbleToShoot bubbleToShoot;
     Arrow Arrow;
     private Layout Layout;
 
@@ -15,7 +16,9 @@ public class BubbleShooter : MonoBehaviour
     public FloatVariable shootStrength;
     public PhysicsMaterial2D BounceMaterial;
     bool readyToShoot;
-    private CircleCollider2D col;
+
+    //for bubble placement
+    [SerializeField] private FloatVariable offset;
     
     [Header("Debugging")]
     public Transform bottomCollider;
@@ -36,7 +39,6 @@ public class BubbleShooter : MonoBehaviour
         bottomCollider = Camera.main.transform.Find("Wall_D2");
 
         bottomCollider.gameObject.SetActive(false);
-        col = bubbleToShoot.GetComponent<CircleCollider2D>();
     }
 
     void Start()
@@ -60,73 +62,81 @@ public class BubbleShooter : MonoBehaviour
 
     void OnEnable()
     {
-        Bubble.OnHasCollided += HasColided;    
+        BubbleToShoot.OnHasCollided += HasColided;    
     }
 
 
     void OnDisable()
     {
-        Bubble.OnHasCollided -= HasColided;  
+        BubbleToShoot.OnHasCollided -= HasColided;  
     }
 
-    private void HasColided(Collision2D _collision)
+    //Handles the logic for Bubble Collision and putting Bubble in its correct position
+    private void HasColided(Collision2D _hitBubble, BubbleToShoot _shotBubble)
     {
-        print($"Has collided with: {_collision.transform.name}");
-        //Getting hit info
-            Rigidbody2D rb = _collision.gameObject.GetComponent<Rigidbody2D>();
+        print($"<color=#67eb34>{_shotBubble.name}</color> has collided with: <color=#eb3434>{_hitBubble.transform.name}</color>");
+        //*Stop Shot Bubble
+            Rigidbody2D rb = _shotBubble.gameObject.GetComponent<Rigidbody2D>();
             rb.velocity = Vector2.zero;                 //stopping velocity
             rb.angularVelocity = 0f;                    //stopping rotation
             rb.sharedMaterial = null;                   //Removing bouncy physics material
             rb.bodyType = RigidbodyType2D.Kinematic;
-            Vector3 hitPos = rb.transform.position;
-            GameObject shotBubble = rb.gameObject;
-            //print("HIT: " + hitPos);
 
-            //Putting Shot Bubble into the right place after collision
-            //Round ROW position
-            hitPos.y = Mathf.Round(hitPos.y);
+            //* Switch Components - from BubbleToShoot to Bubble
+            BubbleColor bc = _shotBubble.BubbleColor;
+            _shotBubble.AddComponent<Bubble>();
+            var bubbleToAttach = _shotBubble.GetComponent<Bubble>();
+            bubbleToAttach.BubbleColor = bc;
+            Destroy(_shotBubble);
 
-            //IF EVEN row, apply offset
-            if (hitPos.y % 2 == 0)
-            {
-                float hitPosX = hitPos.x;               //save original x value   
-                float midValue = Mathf.Round(hitPos.x) + 0.05f;     //to which side of this value is hitPosX
+            //Calculate attachment position
+            bubbleToAttach.transform.position = AttachShotBubble(_hitBubble, bubbleToAttach);
 
-                if (hitPosX >= midValue)                //Offset side - L or R
-                {
-                    hitPos.x = midValue + 0.5f;         //Bubble needs to go to the RIGHT OFFSET
-                    print($"Right: {hitPos}");
-                }
-                else
-                {
-                    hitPos.x = midValue - 0.5f;         //Bubble needs to go to the LEFT OFFSET
-                    print($"Left: {hitPos}");
-                }   
-            }
-            else//ODD ROW
-            {
-                hitPos.x = Mathf.Round(hitPos.x);       //Round rowElement position
-                print($"No offset needed: {hitPos}");
-            }
+            //should it be here? - YES! Otherwise, the CheckForMatching will be called twice.
+            bubbleToAttach.transform.tag = "Bubble";       
 
-            Vector3 correctBouncePosition = hitPos;
-            shotBubble.transform.position = correctBouncePosition;
-
-            
-            //should it be here? - YES! Otherwise, the CheckForMatching will be called twice. Becouse the new ShotBall will colide with this and trigger this event again!
-            shotBubble.transform.tag = "Bubble";
-
-
-            //MATCHING BEGINS
+            //* MATCHING BEGINS
             //After placing the bubble in correct position, check for matching bubbles
 
             //Clear visited bubbles before starting new Check
             visitedBubbles.Clear();
             
             //Start Checking
-            checkForMatchingBubbles(shotBubble.GetComponent<Bubble>());
+            checkForMatchingBubbles(bubbleToAttach);
+    }
 
-            FindAnyObjectByType<BubbleShooter>().SpawnShootingBubble();
+    Vector3 AttachShotBubble(Collision2D _hitBubble, Bubble _bubbleToAttach)
+    {
+        var _hitPos = _hitBubble.GetContact(0).point;
+        var attachPos = _hitPos;
+
+        //ATTACH TO EVEN ROW
+        //Take 1/5 of the bubble's scale for THRESHOLD
+        if(_hitPos.y <= _hitBubble.transform.position.y - 0.2f){
+            attachPos.y = _hitBubble.transform.position.y - 1;
+            if(_hitPos.x >= _hitBubble.transform.position.x)                
+            {
+                attachPos.x = _hitBubble.transform.position.x + offset.value;
+                print($"BELOW RIGHT : {attachPos}");
+            }else
+            {
+                attachPos.x = _hitBubble.transform.position.x - offset.value;
+                print($"BELOW LEFT: {attachPos}");
+            }
+        }else{
+            //ATTACH TO SAME ROW
+            attachPos.y = _hitBubble.transform.position.y;
+            if(_hitPos.x >= _hitBubble.transform.position.x)                
+            {
+                attachPos.x = _hitBubble.transform.position.x + 1;
+                print($"SAME RIGHT : {attachPos}");
+            }else
+            {
+                attachPos.x = _hitBubble.transform.position.x - 1;
+                print($"SAME LEFT: {attachPos}");
+            }
+        }
+        return attachPos;
     }
 
     public void SpawnShootingBubble() 
@@ -135,23 +145,27 @@ public class BubbleShooter : MonoBehaviour
         if (shootingPosition.childCount == 0)
         {
             bottomCollider.gameObject.SetActive(false);
-            bubbleToShoot = Instantiate(bubblePrefab, shootingPosition.transform);
-            Bubble bubble = bubbleToShoot.GetComponent<Bubble>();
-            bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                    //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
-            Layout.BubbleNr++;
-            //Layout.layout.Add(Layout.BubbleNr, bubble);
+            var go = Instantiate(bubblePrefab, shootingPosition.transform);
 
-            bubbleToShoot.transform.localPosition = Vector3.zero;
+            //SWITCH bubble scripts
+            Destroy(go.GetComponent<Bubble>());
+            go.AddComponent<BubbleToShoot>();
+
+            //SET BubbleToShootColor
+            bubbleToShoot = go.GetComponent<BubbleToShoot>();
+            bubbleToShoot.SetBubbleColor((BubbleColor)Random.Range(0, 5));                    //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
+
+            //Change TAG
             bubbleToShoot.tag = "BubbleShot";
+            Layout.BubbleNr++;
             bubbleToShoot.name = "BubbleToShoot" + Layout.BubbleNr;
-            readyToShoot = true;
-            turnOnArrow();
 
             Rigidbody2D rb = bubbleToShoot.GetComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.sharedMaterial = BounceMaterial;                                         //bouncy material from https://discussions.unity.com/t/making-an-object-bounce-off-a-wall-the-same-way-light-bounces-off-of-a-mirror/94792/3
 
-            col.radius = 0.5f;
+            readyToShoot = true;
+            turnOnArrow();
         }
 
     }
@@ -161,15 +175,12 @@ public class BubbleShooter : MonoBehaviour
         {
             turnOffArrow();
             readyToShoot = false;
-
-            // Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // Vector2 dir = mousePos - transform.position;
             
             //Shoot the bubble
             Rigidbody2D rb = bubbleToShoot.GetComponent<Rigidbody2D>();
             rb.velocity = Arrow.GetDirection() * shootStrength.value;
 
-            //unparent bubble
+            //Unparent bubble
             bubbleToShoot.transform.SetParent(null);
             bottomCollider.gameObject.SetActive(true);
         }
@@ -197,23 +208,25 @@ public class BubbleShooter : MonoBehaviour
         {
             foreach (var bubble in MatchingBubbles)
             {
-                
                 PopBubble(bubble);
             }
         }
+
+        //Spawn next Bubble, this is the "end of the turn"
+        SpawnShootingBubble();
     }
 
 
     //Recursive fucntion to find all Matching Bubbles
     private void FindMatchingBubbles(Bubble bubble, BubbleColor bubbleColor, List<Bubble> matchingBubbles)
     {
+        print("Finding matching bubbles");
         //if the bubble has already been visited, then return
         if (visitedBubbles.Contains(bubble)) return;
 
         //Mark current bubble as visited
         visitedBubbles.Add(bubble);
         matchingBubbles.Add(bubble);
-        print("visitedBubbles: " + visitedBubbles.Count);
 
         //Scan for overlapping bubbles
         Collider2D[] OverlappingBubbles = Physics2D.OverlapCircleAll(bubble.transform.position, 0.8f);

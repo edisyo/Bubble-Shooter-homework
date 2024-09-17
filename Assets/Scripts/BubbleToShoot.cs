@@ -1,9 +1,7 @@
+using System;
 using UnityEngine;
 
-
-public enum BubbleColor { Yellow, Blue, Pink, Cyan, Green, Red };       //Needs to be outside of class, otherwise can access it only through Bubble.BubbleColor.x not BubbleColor.x
-
-public class Bubble : MonoBehaviour
+public class BubbleToShoot : MonoBehaviour
 {
     [SerializeField] private BubbleColor bubbleColor;
     public BubbleColor BubbleColor 
@@ -11,7 +9,7 @@ public class Bubble : MonoBehaviour
         get{ return bubbleColor;}
         set{ bubbleColor = value; }
     }
-    
+
     Color c_yellow = new Color(0.97f, 0.9f, 0, 1f);
     Color c_blue = new Color(0, 0.39f, 0.97f, 1f);
     Color c_pink = new Color(0.97f, 0, 0.57f, 1f);
@@ -19,25 +17,23 @@ public class Bubble : MonoBehaviour
     Color c_green = new Color(0, 0.9f, 0, 1f);
     Color c_red = new Color(0.9f, 0.15f, 0, 1f);
 
-    //*Testing if needed
-    [SerializeField] private int column;
-    [SerializeField] private int row;
+    //*Actions
+    /// <summary>
+    /// OnHasCollided will send information about the Bubble's COLLISION
+    /// T1 is the Shot Bubble
+    /// T2 is the colliding Bubble in the Bubble Grid
+    /// </summary>
+    public static Action<Collision2D, BubbleToShoot> OnHasCollided;
 
-    public int Column
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        get{return column;}
+        if (collision.gameObject.CompareTag("Bubble"))
+        {
+            //Calculate collision logic inside BubbleShooter
+            OnHasCollided?.Invoke(collision, this);
+        }
     }
-    public int Row
-    {
-        get{return row;}
-    }
-
-    public void SetRowAndColumn(int _row, int _column)
-    {
-        row = _row;
-        column = _column;
-    }
-
+    
     //SET Bubble's  BubbleColor
     public void SetBubbleColor (BubbleColor _bubbleColor)                
     {                                                                   //with a little bit of help from https://stackoverflow.com/questions/22335103/c-sharp-how-to-use-get-set-and-use-enums-in-a-class and https://www.youtube.com/watch?v=HzIqrlSbjjU&list=PLX2vGYjWbI0S8YpPPKKvXZayCjkKj4bUP&index=3
@@ -71,5 +67,4 @@ public class Bubble : MonoBehaviour
                 break;
         }
     }
-
 }

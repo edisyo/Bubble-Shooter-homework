@@ -10,20 +10,21 @@ public class Layout : MonoBehaviour
 
     [SerializeField] private GameObject bubblePrefab;
    
-    [SerializeField] private int bubbleNr = 0;
+    
     public Dictionary<Vector2, Bubble> layout = new Dictionary<Vector2, Bubble>();
 
+    [SerializeField] private FloatVariable offset;
 
+    [Header("Debugging")] 
+    [SerializeField] private int bubbleNr = 0;
+
+
+    //GETTERS and SETTERS
     public int BubbleNr
     {   
         get{return bubbleNr;}
         set{bubbleNr = value;}
     }
-    
-     private float offset;
-
-     
-
     
 
     // Start is called before the first frame update
@@ -47,7 +48,7 @@ public class Layout : MonoBehaviour
 
     private void CreateLayout()
     {
-        offset = bubblePrefab.transform.localScale.x / 2;
+        //offset = bubblePrefab.transform.localScale.x / 2;
 
         //GRID
         for (int row = 1; row <= maxRow; row++)
@@ -61,9 +62,9 @@ public class Layout : MonoBehaviour
                     //TODO: Create a function for this IF statement
                     if (bubblePrefab != null)
                     {
-                        GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement - offset, -row, 0), Quaternion.identity);
+                        GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement + offset.value, -row, 0), Quaternion.identity);
                         Bubble bubble = go.GetComponent<Bubble>();
-                        bubble.SetRowAndColumn(rowElement, row);
+                        bubble.SetRowAndColumn(row, rowElement);
                         bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
                         bubble.name = "Bubble"+BubbleNr;
                         BubbleNr++;
@@ -83,7 +84,7 @@ public class Layout : MonoBehaviour
                     {
                         GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement, -row, 0), Quaternion.identity);
                         Bubble bubble = go.GetComponent<Bubble>();
-                        bubble.SetRowAndColumn(rowElement, row);
+                        bubble.SetRowAndColumn(row, rowElement);
                         bubble.SetBubbleColor((BubbleColor)Random.Range(0, 5));                     //Help from https://discussions.unity.com/t/using-random-range-to-pick-a-random-value-out-of-an-enum/119639
                         bubble.name = "Bubble" + BubbleNr;
                         BubbleNr++;
