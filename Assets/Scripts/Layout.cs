@@ -59,7 +59,7 @@ public class Layout : MonoBehaviour
                 //ROW to the RIGHT
                 for (int rowElement = 1; rowElement <= maxRowElements; rowElement++)
                 {
-                    //TODO: Create a function for this IF statement
+                    //[ ] TODO: Create a function for this IF statement
                     if (bubblePrefab != null)
                     {
                         GameObject go = Instantiate(bubblePrefab, new Vector3(rowElement + offset.value, -row, 0), Quaternion.identity);

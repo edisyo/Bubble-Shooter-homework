@@ -7,6 +7,7 @@ using UnityEditor;
 
 public class BubbleShooter : MonoBehaviour
 {
+    //Necessary setup for Shooter
     public GameObject bubblePrefab;
     private BubbleToShoot bubbleToShoot;
     Arrow Arrow;
@@ -25,7 +26,6 @@ public class BubbleShooter : MonoBehaviour
     public Transform shootingPosition;
 
     //debugging
-    //public TextMeshProUGUI debug1;
 
     //Bubble collision variables
     private HashSet<Bubble> visitedBubbles = new HashSet<Bubble>();
@@ -206,6 +206,9 @@ public class BubbleShooter : MonoBehaviour
         //Found at least 3 matching bubbles, execute "Pop'ing" them
         if (MatchingBubbles.Count >= 3)
         {
+            //[ ]TODO: Check for leftover Bubbles. Do 1 more function similiar to FindMatchingBubbles and put those Bubbles
+            //      in a list. If 1 Bubbles in list is in  1 ROW, then dont pop this list, else POP
+
             foreach (var bubble in MatchingBubbles)
             {
                 PopBubble(bubble);
@@ -246,7 +249,7 @@ public class BubbleShooter : MonoBehaviour
 
 
     //Check if bubble is "left hanging"
-    //TODO: Fix logic
+    //[ ]TODO: Fix logic
     private void isLeftHanging()
     {
         //If no overlapping Bubbles, only itself, then POP
