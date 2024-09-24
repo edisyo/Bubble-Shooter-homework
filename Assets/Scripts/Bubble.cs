@@ -20,16 +20,19 @@ public class Bubble : MonoBehaviour
     Color c_red = new Color(0.9f, 0.15f, 0, 1f);
 
     //*Testing if needed
-    [SerializeField] private int column;
     [SerializeField] private int row;
+    [SerializeField] private int column;
+
 
     public int Column
     {
         get{return column;}
+        set{column = value;}
     }
     public int Row
     {
         get{return row;}
+        set{row = value;}
     }
 
     public void SetRowAndColumn(int _row, int _column)

@@ -29,6 +29,7 @@ public class BubbleShooter : MonoBehaviour
 
     //Bubble collision variables
     private HashSet<Bubble> visitedBubbles = new HashSet<Bubble>();
+    private HashSet<Bubble> floatingVisitedBubbles = new HashSet<Bubble>();
 
 
     private void Awake()
@@ -75,14 +76,16 @@ public class BubbleShooter : MonoBehaviour
     private void HasColided(Collision2D _hitBubble, BubbleToShoot _shotBubble)
     {
         print($"<color=#67eb34>{_shotBubble.name}</color> has collided with: <color=#eb3434>{_hitBubble.transform.name}</color>");
-        //*Stop Shot Bubble
+        //Stop Shot Bubble
             Rigidbody2D rb = _shotBubble.gameObject.GetComponent<Rigidbody2D>();
             rb.velocity = Vector2.zero;                 //stopping velocity
             rb.angularVelocity = 0f;                    //stopping rotation
             rb.sharedMaterial = null;                   //Removing bouncy physics material
             rb.bodyType = RigidbodyType2D.Kinematic;
 
-            //* Switch Components - from BubbleToShoot to Bubble
+            //Switch Components - from BubbleToShoot to Bubble
+
+            //BUG: Sometimes adds two Bubble scripts
             BubbleColor bc = _shotBubble.BubbleColor;
             _shotBubble.AddComponent<Bubble>();
             var bubbleToAttach = _shotBubble.GetComponent<Bubble>();
@@ -108,31 +111,65 @@ public class BubbleShooter : MonoBehaviour
     Vector3 AttachShotBubble(Collision2D _hitBubble, Bubble _bubbleToAttach)
     {
         var _hitPos = _hitBubble.GetContact(0).point;
+        var hitBubble = _hitBubble.gameObject.GetComponent<Bubble>();
         var attachPos = _hitPos;
 
         //ATTACH TO EVEN ROW
         //Take 1/5 of the bubble's scale for THRESHOLD
         if(_hitPos.y <= _hitBubble.transform.position.y - 0.2f){
             attachPos.y = _hitBubble.transform.position.y - 1;
+            _bubbleToAttach.Row = hitBubble.Row + 1;
             if(_hitPos.x >= _hitBubble.transform.position.x)                
             {
+                //BELOW RIGHT
+                
                 attachPos.x = _hitBubble.transform.position.x + offset.value;
+
+                //Check to see if hit EVEN ROW
+                if(hitBubble.Row % 2 == 0)
+                {
+                    //hit even
+                    _bubbleToAttach.Column = hitBubble.Column + 1;
+                }else
+                {
+                     //hit uneven
+                    _bubbleToAttach.Column = hitBubble.Column;
+                }
+
+                
                 print($"BELOW RIGHT : {attachPos}");
             }else
             {
+                //BELOW LEFT
                 attachPos.x = _hitBubble.transform.position.x - offset.value;
+
+                //Check to see if hit EVEN ROW
+                if(hitBubble.Row % 2 == 0)
+                {
+                    print("hit EVEN row");
+                    _bubbleToAttach.Column = hitBubble.Column;
+                }else
+                {
+                    print("hit UNEVEN row");
+                    _bubbleToAttach.Column = hitBubble.Column -1;
+                }
+
                 print($"BELOW LEFT: {attachPos}");
             }
         }else{
             //ATTACH TO SAME ROW
             attachPos.y = _hitBubble.transform.position.y;
+            _bubbleToAttach.Row = hitBubble.Row;
+            
             if(_hitPos.x >= _hitBubble.transform.position.x)                
             {
                 attachPos.x = _hitBubble.transform.position.x + 1;
+                _bubbleToAttach.Column = hitBubble.Column + 1;
                 print($"SAME RIGHT : {attachPos}");
             }else
             {
                 attachPos.x = _hitBubble.transform.position.x - 1;
+                _bubbleToAttach.Column = hitBubble.Column - 1;
                 print($"SAME LEFT: {attachPos}");
             }
         }
@@ -206,8 +243,11 @@ public class BubbleShooter : MonoBehaviour
         //Found at least 3 matching bubbles, execute "Pop'ing" them
         if (MatchingBubbles.Count >= 3)
         {
+            //[ ]FIXME: First must FIX Shooting Bubble Row and Column assigning 
             //[ ]TODO: Check for leftover Bubbles. Do 1 more function similiar to FindMatchingBubbles and put those Bubbles
             //      in a list. If 1 Bubbles in list is in  1 ROW, then dont pop this list, else POP
+
+
 
             foreach (var bubble in MatchingBubbles)
             {
@@ -223,7 +263,6 @@ public class BubbleShooter : MonoBehaviour
     //Recursive fucntion to find all Matching Bubbles
     private void FindMatchingBubbles(Bubble bubble, BubbleColor bubbleColor, List<Bubble> matchingBubbles)
     {
-        print("Finding matching bubbles");
         //if the bubble has already been visited, then return
         if (visitedBubbles.Contains(bubble)) return;
 
@@ -247,22 +286,18 @@ public class BubbleShooter : MonoBehaviour
         }
     }
 
-
-    //Check if bubble is "left hanging"
-    //[ ]TODO: Fix logic
-    private void isLeftHanging()
+    //FIXME: Recursive function to find all LEFTOVER FLOATING Bubbles after a Bubble Matching has been done
+    //      Check for leftover Bubbles. Do 1 more function similiar to FindMatchingBubbles and put those Bubbles
+    //      in a list. If 1 Bubbles in list is in  1 ROW, then dont pop this list, else POP
+    private void CheckLeftoverBubbles(Bubble bubble)
     {
-        //If no overlapping Bubbles, only itself, then POP
-        if (transform.CompareTag("Bubble"))             //to not affect Shooting Bubble
-        {
-            Collider2D[] OverlappingBubbles = Physics2D.OverlapCircleAll(transform.position, 0.8f);
+        //Peform BFS or DFS from all bubble in the First Row
 
-            //Overlapping only self
-            if (OverlappingBubbles.Length == 1)
-            { 
-                //PopBubble(this);
-            } 
-        }
+        //Mark Visited
+
+        //Check in all Bubble list if visited, if not - floating
+
+        //Floating bubbles.Pop
     }
 
     //Bubble has been matched, "pop it"
@@ -270,6 +305,8 @@ public class BubbleShooter : MonoBehaviour
     {
         bubble.gameObject.SetActive(false);
         //Add Score
+        //TODO: Remove Bubble from the Layout list!
         Destroy(bubble.gameObject);
+
     }
 }

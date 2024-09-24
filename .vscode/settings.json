@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Bubble-Shooter-homework.sln"
+    "dotnet.defaultSolution": "Bubble-Shooter.sln"
 }
